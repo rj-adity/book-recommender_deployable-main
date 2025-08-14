@@ -1,45 +1,76 @@
 # BOOK-RECOMMENDER-SYSTEM
 
-I have developed a book recommender system deployed on my local host using PyCharm. The system utilizes two recommendation strategies: a popularity-based approach that highlights trending books and a collaborative filtering method that analyzes user ratings to suggest books that align with individual preferences. This dual approach ensures that users receive both widely accepted recommendations and personalized suggestions based on their reading history, enhancing their overall experience.
+A book recommender system that provides both popularity-based and collaborative filtering recommendations. This system can be deployed on Hugging Face Spaces for easy access.
 
-![App Screenshot](https://github.com/Sanika2029/book-recommender/blob/main/Home%20Page.png)
-![App Screenshot](https://github.com/Sanika2029/book-recommender/blob/main/PyCharm-deployment.png)
+## 🚀 **Deployment**
 
-## RECOMMENDATION TYPES
+### **Hugging Face Spaces (Recommended)**
+- **Easy deployment** with one-click setup
+- **Free hosting** for machine learning applications
+- **Built-in API access** with public URLs
+- **Automatic scaling** and monitoring
+- **Beautiful Gradio interface** for easy testing
+
+## 📊 **RECOMMENDATION TYPES**
+
 Recommendation systems can be categorized into 4 main types: 
 
-1️⃣Popularity-based systems, which highlight trending content like YouTube's trending section or IMDb's top movies
+1️⃣ **Popularity-based systems** - Highlight trending content like YouTube's trending section or IMDb's top movies
 
-2️⃣Content-based systems, which assess similarity based on attributes like actors or themes
+2️⃣ **Content-based systems** - Assess similarity based on attributes like actors or themes
 
-3️⃣Collaborative filtering systems, which rely on user ratings
+3️⃣ **Collaborative filtering systems** - Rely on user ratings (what this system uses)
 
-4️⃣Hybrid systems, like Netflix's, which combine multiple approaches to enhance recommendations.
+4️⃣ **Hybrid systems** - Like Netflix's, which combine multiple approaches to enhance recommendations
 
+## 🔍 **FEATURES**
 
-## POPULARITY BASED
+### **Popularity Based Recommendations**
+- Shows TOP 50 books with Highest avg Rating
+- Minimum of 250 votes required
+- Based on overall user ratings and popularity
 
-![App Screenshot](https://github.com/Sanika2029/book-recommender/blob/main/Popularity%20based.png)
+### **Collaborative Based Recommendations**
+- Considers users with minimum of 200 ratings
+- Books must have been voted by more than 50 users
+- Uses cosine similarity for personalized recommendations
 
- To show TOP 50 books with Highest avg Rating but min of 250 votes.
+## 🌐 **API Endpoints**
 
-## COLLABORATIVE BASED
+Once deployed, your API will be available at:
+- **Home**: `/` - API information and status
+- **Health Check**: `/health` - System health and model status
+- **Popular Books**: `/popular` - Top 50 popular books
+- **Recommendations**: `/recommend/<book_name>` - Get book suggestions
+- **Search**: `/search/<query>` - Search books by title or author
 
-![App Screenshot](https://github.com/Sanika2029/book-recommender/blob/main/Collaborative%20filtering.png)
+## 🛠️ **Skills & Technologies**
+- Jupyter Notebook
+- Python
+- Machine Learning
+- Recommendation system
+- Flask API
+- Hugging Face Spaces
+- Pandas & NumPy
+- Scikit-learn
 
-Considering users who has done min of 200 ratings
-and Books which has been voted by more than 50 users
-
-## 🔗 Links
+## 🔗 **Links**
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sanika-nandurkar-7ab823250/)
 
+## 📱 **Quick Start**
 
+1. **Deploy to Hugging Face Spaces**:
+   - Go to [huggingface.co/spaces](https://huggingface.co/spaces)
+   - Create new Space
+   - Choose "Gradio" template
+   - Upload your files
 
-## 🛠 Skills
-Jupter Notebook,
-Python,
-PyCharm,
-Machine Learning,
-Recommendation system,
-HTML,
-CSS.
+2. **Test the API**:
+   - Visit your Space URL
+   - Use the beautiful Gradio interface
+   - Test all endpoints
+   - Enjoy your book recommendations!
+
+---
+
+**Note**: This system is designed to work without HTML/CSS files, providing a clean API-based solution that can be easily integrated into any application.

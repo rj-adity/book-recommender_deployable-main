@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import numpy as np
 import pandas as pd
 import pickle
 import os
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for Hugging Face Spaces
 
 # Load the pre-trained models and data
 try:
@@ -12,9 +14,9 @@ try:
     pt = pickle.load(open('pt.pkl', 'rb'))
     books = pickle.load(open('books.pkl', 'rb'))
     similarity_scores = pickle.load(open('similarity_scores.pkl', 'rb'))
-except FileNotFoundError:
-    # If pickle files don't exist, we'll need to create them
-    print("Pickle files not found. Please ensure the model files are present.")
+    print("✅ All models loaded successfully!")
+except FileNotFoundError as e:
+    print(f"❌ Model file not found: {e}")
     popular_df = None
     pt = None
     books = None
@@ -24,10 +26,18 @@ except FileNotFoundError:
 def home():
     return jsonify({
         "message": "Book Recommender System API",
+        "status": "running",
+        "models_loaded": {
+            "popular_df": popular_df is not None,
+            "pt": pt is not None,
+            "books": books is not None,
+            "similarity_scores": similarity_scores is not None
+        },
         "endpoints": {
             "popular_books": "/popular",
             "recommend_books": "/recommend/<book_name>",
-            "search_books": "/search/<query>"
+            "search_books": "/search/<query>",
+            "health": "/health"
         }
     })
 
@@ -130,7 +140,7 @@ def search_books(query):
 
 @app.route('/health')
 def health_check():
-    """Health check endpoint for Railway"""
+    """Health check endpoint for monitoring"""
     return jsonify({
         "status": "healthy",
         "models_loaded": {
@@ -142,5 +152,5 @@ def health_check():
     })
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 7860))  # Hugging Face uses port 7860
     app.run(host='0.0.0.0', port=port, debug=False) 
