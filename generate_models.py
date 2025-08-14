@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!python
 """
 Script to generate the pickle files needed for the book recommender system.
-This should be run once to create the model files before deployment.
+This script replicates the exact logic from Book_recommender.ipynb
 """
 
 import numpy as np
@@ -13,6 +13,8 @@ import os
 def generate_models():
     """Generate all the pickle files needed for the recommender system"""
     
+    print("Book Recommender System - Model Generator")
+    print("=" * 50)
     print("Loading data...")
     
     # Check if CSV files exist
@@ -25,37 +27,53 @@ def generate_models():
         return False
     
     try:
-        # Load the CSV files
-        books = pd.read_csv('Books.csv', low_memory=False)
-        users = pd.read_csv('Users.csv')
-        ratings = pd.read_csv('Ratings.csv')
+        # Load the CSV files with correct separator (semicolon) and encoding
+        try:
+            books = pd.read_csv('Books.csv', encoding='latin-1', sep=';', on_bad_lines='skip')
+        except:
+            books = pd.read_csv('Books.csv', sep=';', on_bad_lines='skip')
+        
+        try:
+            users = pd.read_csv('Users.csv', encoding='latin-1', sep=';', on_bad_lines='skip')
+        except:
+            users = pd.read_csv('Users.csv', sep=';', on_bad_lines='skip')
+            
+        try:
+            ratings = pd.read_csv('Ratings.csv', encoding='latin-1', sep=';', on_bad_lines='skip')
+        except:
+            ratings = pd.read_csv('Ratings.csv', sep=';', on_bad_lines='skip')
         
         print(f"Loaded {len(books)} books, {len(users)} users, {len(ratings)} ratings")
         
-        # Generate Popularity Based Recommender
+        # Check column names to debug
+        print(f"Books columns: {list(books.columns)}")
+        print(f"Ratings columns: {list(ratings.columns)}")
+        print(f"Users columns: {list(users.columns)}")
+        
+        # Generate Popularity Based Recommender (exactly as in notebook)
         print("Generating popularity-based recommendations...")
         ratings_with_name = ratings.merge(books, on='ISBN')
-        
-        # Convert ratings to numeric and handle non-numeric values
-        ratings_with_name['Book-Rating'] = pd.to_numeric(ratings_with_name['Book-Rating'], errors='coerce')
-        ratings_with_name.dropna(subset=['Book-Rating'], inplace=True)
         
         # Get number of ratings per book
         num_rating_df = ratings_with_name.groupby('Book-Title').count()['Book-Rating'].reset_index()
         num_rating_df.rename(columns={'Book-Rating': 'num_ratings'}, inplace=True)
         
+        # Convert ratings to numeric and handle non-numeric values (as in notebook)
+        ratings_with_name['Book-Rating'] = pd.to_numeric(ratings_with_name['Book-Rating'], errors='coerce')
+        ratings_with_name.dropna(subset=['Book-Rating'], inplace=True)
+        
         # Get average rating per book
         avg_rating_df = ratings_with_name.groupby('Book-Title')['Book-Rating'].mean().reset_index()
         avg_rating_df.rename(columns={'Book-Rating': 'avg_rating'}, inplace=True)
         
-        # Merge and filter popular books (min 250 ratings)
+        # Merge and filter popular books (min 250 ratings) - exactly as in notebook
         popular_df = num_rating_df.merge(avg_rating_df, on='Book-Title')
         popular_df = popular_df[popular_df['num_ratings'] >= 250].sort_values('avg_rating', ascending=False).head(50)
         popular_df = popular_df.merge(books, on='Book-Title').drop_duplicates('Book-Title')[['Book-Title', 'Book-Author', 'Image-URL-M', 'num_ratings', 'avg_rating']]
         
         print(f"Generated popularity recommendations for {len(popular_df)} books")
         
-        # Generate Collaborative Filtering Based Recommender
+        # Generate Collaborative Filtering Based Recommender (exactly as in notebook)
         print("Generating collaborative filtering recommendations...")
         
         # Filter users with more than 200 ratings
@@ -81,7 +99,7 @@ def generate_models():
         
         print(f"Generated collaborative filtering for {len(pt)} books with {similarity_scores.shape[0]} similarity scores")
         
-        # Save all models to pickle files
+        # Save all models to pickle files (exactly as in notebook)
         print("Saving models to pickle files...")
         
         pickle.dump(popular_df, open('popular.pkl', 'wb'))
@@ -100,12 +118,12 @@ def generate_models():
         
     except Exception as e:
         print(f"Error generating models: {str(e)}")
+        import traceback
+        print("Full error details:")
+        traceback.print_exc()
         return False
 
 if __name__ == "__main__":
-    print("Book Recommender System - Model Generator")
-    print("=" * 50)
-    
     success = generate_models()
     
     if success:
